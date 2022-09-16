@@ -1,0 +1,21 @@
+{
+  "name": "05-clima-app-ts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.20.0",
+    "colors": "^1.4.0",
+    "dotenv": "^16.0.2",
+    "inquirer": "^7.3.3"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^9.0.1"
+  }
+}
