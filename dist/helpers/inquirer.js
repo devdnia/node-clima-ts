@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.leerInput = exports.pausa = exports.inquirerMenu = void 0;
+exports.listarLugares = exports.leerInput = exports.pausa = exports.inquirerMenu = void 0;
 const inquirer_1 = __importDefault(require("inquirer"));
 const colors_1 = __importDefault(require("colors"));
 const preguntas = [
@@ -75,29 +75,30 @@ const leerInput = (message) => __awaiter(void 0, void 0, void 0, function* () {
     return desc;
 });
 exports.leerInput = leerInput;
-// export const listadoTareasBorrar = async ( tareas = [] ) => {
-//     const choices = tareas.map( (tarea, index ) => {
-//         const idx = `${index + 1}`.green;
-//         return {
-//             value: tarea.id,
-//             name: `${ idx}. ${ tarea.desc }`,
-//         }
-//     });
-//     choices.unshift({
-//         value: '0',
-//         name: '0.'.green + ' Cancelar'
-//     });
-//     const preguntas = [
-//         {
-//             type: 'list',
-//             name: 'id',
-//             message: 'Borrar',
-//             choices
-//         }
-//     ];
-//     const { id } = await inquirer.prompt( preguntas );
-//     return id;
-// }
+const listarLugares = (lugares) => __awaiter(void 0, void 0, void 0, function* () {
+    const choices = lugares.map((lugar, index) => {
+        const idx = `${index + 1}`.green;
+        return {
+            value: lugar.id,
+            name: `${idx}. ${lugar.nombre}`,
+        };
+    });
+    choices.unshift({
+        value: 0,
+        name: '0.'.green + ' Cancelar'
+    });
+    const preguntas = [
+        {
+            type: 'list',
+            name: 'id',
+            message: 'Seleccione lugar:',
+            choices
+        }
+    ];
+    const { id } = yield inquirer_1.default.prompt(preguntas);
+    return id;
+});
+exports.listarLugares = listarLugares;
 // export const confirmar = async ( message ) => {
 //     const question = [
 //         {

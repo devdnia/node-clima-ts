@@ -1,5 +1,6 @@
 import inquirer from 'inquirer';
 import colors from 'colors';
+import { MapBoxPlace } from '../models/mapBox';
 
 
 
@@ -82,34 +83,35 @@ export const leerInput = async ( message : string) : Promise<string> => {
 }
 
 
-// export const listadoTareasBorrar = async ( tareas = [] ) => {
+export const listarLugares = async ( lugares: MapBoxPlace [] ) => {
 
-//     const choices = tareas.map( (tarea, index ) => {
+    const choices = lugares.map( (lugar, index ) => {
 
-//         const idx = `${index + 1}`.green;
-//         return {
-//             value: tarea.id,
-//             name: `${ idx}. ${ tarea.desc }`,
-//         }
-//     });
+        const idx = `${index + 1}`.green;
 
-//     choices.unshift({
-//         value: '0',
-//         name: '0.'.green + ' Cancelar'
-//     });
+        return {
+            value: lugar.id,
+            name: `${ idx}. ${ lugar.nombre }`,
+        }
+    });
 
-//     const preguntas = [
-//         {
-//             type: 'list',
-//             name: 'id',
-//             message: 'Borrar',
-//             choices
-//         }
-//     ];
-//     const { id } = await inquirer.prompt( preguntas );
+    choices.unshift({
+        value: 0,
+        name: '0.'.green + ' Cancelar'
+    });
+
+    const preguntas = [
+        {
+            type: 'list',
+            name: 'id',
+            message: 'Seleccione lugar:',
+            choices
+        }
+    ];
+    const { id } = await inquirer.prompt( preguntas );
  
-//     return id;
-// }
+    return id;
+}
 
 // export const confirmar = async ( message ) => {
     

@@ -60,8 +60,14 @@ class Busquedas {
                     params: this.paramsMapbox
                 });
                 const resp = yield instance.get('');
-                console.log(resp.data);
-                return [];
+                // console.log( resp.data.features );
+                // Video 76 - 3:17
+                return resp.data.features.map((lugar) => ({
+                    id: lugar.id,
+                    nombre: lugar.place_name,
+                    lng: lugar.center[0],
+                    lat: lugar.center[1],
+                }));
             }
             catch (error) {
                 return [];

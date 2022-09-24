@@ -1,13 +1,15 @@
 import * as dotenv from 'dotenv';
 import axios from 'axios';
+import { MapBoxPlace } from './mapBox';
 
-const {  parsed: {
+const { parsed: {
     MAPBOX_KEY
-}} :  dotenv.DotenvConfigOutput | any = dotenv.config();
+} }: dotenv.DotenvConfigOutput | any = dotenv.config();
+
 
 export class Busquedas {
 
-    historal: string[] = [ 'Alicante', 'Madrid', 'Barcelona' ];
+    historal: string[] = ['Alicante', 'Madrid', 'Barcelona'];
 
     constructor() {
         // TODO: leer DB si existe
@@ -25,18 +27,29 @@ export class Busquedas {
 
     async ciudad( lugar: string ) {
 
+
         try {
             // Petición http
             const instance = axios.create({
-                baseURL: `https://api.mapbox.com/geocoding/v5/mapbox.places/${ lugar }.json`,
+                baseURL: `https://api.mapbox.com/geocoding/v5/mapbox.places/${lugar}.json`,
                 params: this.paramsMapbox
             });
 
-            const resp = await instance.get('');
-            console.log( resp.data );
 
-            return []
+            const resp = await instance.get('');
+            // console.log( resp.data.features );
+
+            // Video 76 - 3:17
+            return resp.data.features.map( ( lugar : MapBoxPlace )  => ({
+                    id: lugar.id,
+                    nombre: lugar.place_name,
+                    lng: lugar.center[0],
+                    lat: lugar.center[1],
+            }));
             
+
+
+
         } catch (error) {
             return [];
         }
