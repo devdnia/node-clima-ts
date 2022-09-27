@@ -38,7 +38,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Busquedas = void 0;
 const dotenv = __importStar(require("dotenv"));
 const axios_1 = __importDefault(require("axios"));
-const { parsed: { MAPBOX_KEY } } = dotenv.config();
+const { parsed: { MAPBOX_KEY, OPENWEATHER_KEY, } } = dotenv.config();
 class Busquedas {
     constructor() {
         this.historal = ['Alicante', 'Madrid', 'Barcelona'];
@@ -49,6 +49,13 @@ class Busquedas {
             'access_token': MAPBOX_KEY,
             'limit': 5,
             'language': 'es'
+        };
+    }
+    get paramsOpenWeatherMap() {
+        return {
+            appid: OPENWEATHER_KEY,
+            units: 'metric',
+            lang: 'es'
         };
     }
     ciudad(lugar) {
@@ -71,6 +78,29 @@ class Busquedas {
             }
             catch (error) {
                 return [];
+            }
+        });
+    }
+    climarLugar(lat, lon) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                // Instancia de axios
+                const instance = axios_1.default.create({
+                    baseURL: `https://api.openweathermap.org/data/2.5/weather?`,
+                    params: Object.assign(Object.assign({}, this.paramsOpenWeatherMap), { lat, lon }),
+                });
+                // resp.data
+                const resp = yield instance.get('');
+                const { weather, main } = resp.data;
+                return {
+                    desc: weather[0].description,
+                    min: main.temp_min,
+                    max: main.temp_max,
+                    temp: main.temp,
+                };
+            }
+            catch (error) {
+                console.log(error);
             }
         });
     }

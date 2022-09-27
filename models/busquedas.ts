@@ -3,7 +3,8 @@ import axios from 'axios';
 import { MapBoxPlace } from './mapBox';
 
 const { parsed: {
-    MAPBOX_KEY
+    MAPBOX_KEY,
+    OPENWEATHER_KEY,
 } }: dotenv.DotenvConfigOutput | any = dotenv.config();
 
 
@@ -22,6 +23,15 @@ export class Busquedas {
             'access_token': MAPBOX_KEY,
             'limit': 5,
             'language': 'es'
+        }
+    }
+
+    get paramsOpenWeatherMap() {
+
+        return {
+            appid: OPENWEATHER_KEY,
+            units: 'metric',
+            lang: 'es'
         }
     }
 
@@ -57,5 +67,29 @@ export class Busquedas {
 
     }
 
+    async climarLugar( lat: number, lon: number){
 
+
+        try {
+            
+            // Instancia de axios
+            const instance = axios.create({
+                baseURL: `https://api.openweathermap.org/data/2.5/weather?`,
+                params: {...this.paramsOpenWeatherMap, lat, lon },
+            });
+
+            // resp.data
+            const resp = await instance.get('');
+            const { weather, main  } = resp.data;
+
+            return {
+                desc: weather[0].description,
+                min: main.temp_min,
+                max: main.temp_max,
+                temp: main.temp,
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
 }

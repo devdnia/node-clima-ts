@@ -30,16 +30,19 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 // console.log( { id } );
                 // Seleccionar el lugar
                 const lugarSel = lugares.find(lugar => lugar.id === id);
-                console.log(lugarSel);
+                // console.log( lugarSel );
                 // Clima
+                const clima = yield busquedas.climarLugar(lugarSel.lat, lugarSel.lng);
                 // Mostrar resultados
+                console.clear();
                 console.log(colors_1.default.green('\nInformación de la ciduad\n'));
-                console.log('Ciudad:', lugarSel === null || lugarSel === void 0 ? void 0 : lugarSel.nombre);
-                console.log('Lat:', lugarSel === null || lugarSel === void 0 ? void 0 : lugarSel.lat);
-                console.log('Lng:', lugarSel === null || lugarSel === void 0 ? void 0 : lugarSel.lng);
-                console.log('Temperatura:');
-                console.log('Mínima:');
-                console.log('Máxima:');
+                console.log('Ciudad:', colors_1.default.green(lugarSel.nombre));
+                console.log('Lat:', lugarSel.lat);
+                console.log('Lng:', lugarSel.lng);
+                console.log('Temperatura:', clima.temp);
+                console.log('Mínima:', clima.min);
+                console.log('Máxima:', clima.max);
+                console.log('Como está el clima:', colors_1.default.green(clima.desc));
                 break;
         }
         if (opt !== 0)
