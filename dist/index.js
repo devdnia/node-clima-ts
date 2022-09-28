@@ -27,10 +27,12 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 // Buscar los lugares
                 const lugares = yield busquedas.ciudad(termino);
                 const id = yield (0, inquirer_1.listarLugares)(lugares);
-                // console.log( { id } );
+                if (id === 0)
+                    continue;
                 // Seleccionar el lugar
                 const lugarSel = lugares.find(lugar => lugar.id === id);
-                // console.log( lugarSel );
+                // Guardar DB
+                busquedas.agregarHistorial(lugarSel.nombre);
                 // Clima
                 const clima = yield busquedas.climarLugar(lugarSel.lat, lugarSel.lng);
                 // Mostrar resultados
@@ -43,6 +45,12 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 console.log('Mínima:', clima.min);
                 console.log('Máxima:', clima.max);
                 console.log('Como está el clima:', colors_1.default.green(clima.desc));
+                break;
+            case 2:
+                busquedas.historialCapitalizado.forEach((lugar, index) => {
+                    const idx = colors_1.default.green(`${index + 1}.`);
+                    console.log(`${idx} ${lugar}`);
+                });
                 break;
         }
         if (opt !== 0)

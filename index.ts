@@ -20,7 +20,7 @@ const main = async () : Promise<void> => {
     do {
         opt = await inquirerMenu();
         
-        switch ( opt) {
+        switch ( opt ) {
 
             case 1:
                 // Mostrar mensaje
@@ -29,13 +29,16 @@ const main = async () : Promise<void> => {
                 // Buscar los lugares
                 const lugares : MapBoxPlace [] = await busquedas.ciudad( termino );
                 const id = await listarLugares( lugares);
+                if ( id === 0 ) continue;
 
-                // console.log( { id } );
-                
+
 
                 // Seleccionar el lugar
                 const lugarSel  = lugares.find( lugar => lugar.id === id );
-                // console.log( lugarSel );
+               
+                // Guardar DB
+                busquedas.agregarHistorial( lugarSel!.nombre );
+                
 
                 // Clima
                 const clima = await busquedas.climarLugar( lugarSel!.lat, lugarSel!.lng );
@@ -54,6 +57,14 @@ const main = async () : Promise<void> => {
 
                 break;
         
+                case 2:
+                    busquedas.historialCapitalizado.forEach( (lugar, index ) =>{
+                        const idx =  colors.green( `${ index + 1 }.` );
+                        console.log( `${ idx } ${ lugar }`);
+                    })
+                
+                break;
+
      
         }
 

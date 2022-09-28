@@ -36,13 +36,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Busquedas = void 0;
+const fs_1 = __importDefault(require("fs"));
 const dotenv = __importStar(require("dotenv"));
 const axios_1 = __importDefault(require("axios"));
 const { parsed: { MAPBOX_KEY, OPENWEATHER_KEY, } } = dotenv.config();
 class Busquedas {
     constructor() {
-        this.historal = ['Alicante', 'Madrid', 'Barcelona'];
-        // TODO: leer DB si existe
+        this.historial = [];
+        this.dbPath = './db/database.json';
+        this.leerBD();
+    }
+    get historialCapitalizado() {
+        return this.historial.map(lugar => {
+            let palabras = lugar.split(' ');
+            palabras = palabras.map(p => p[0].toUpperCase() + p.substring(1));
+            // Devuelvo las palabras unidas por el espacio
+            return palabras.join(' ');
+        });
     }
     get paramsMapbox() {
         return {
@@ -68,7 +78,6 @@ class Busquedas {
                 });
                 const resp = yield instance.get('');
                 // console.log( resp.data.features );
-                // Video 76 - 3:17
                 return resp.data.features.map((lugar) => ({
                     id: lugar.id,
                     nombre: lugar.place_name,
@@ -103,6 +112,32 @@ class Busquedas {
                 console.log(error);
             }
         });
+    }
+    agregarHistorial(lugar) {
+        // Si está el lugar no graba
+        if (this.historial.includes(lugar.toLowerCase()))
+            return;
+        // Solo almaceno 5 en el historial
+        this.historial = this.historial.splice(0, 4);
+        // Guarda en el arreglo
+        this.historial.unshift(lugar.toLowerCase());
+        // Grabar en DB
+        this.guardarDB();
+    }
+    guardarDB() {
+        const payload = {
+            historial: this.historial,
+        };
+        fs_1.default.writeFileSync(this.dbPath, JSON.stringify(payload));
+    }
+    leerBD() {
+        // Comprobar que el archivo existe
+        if (!fs_1.default.existsSync(this.dbPath))
+            return;
+        // Si existe el archivo
+        const info = fs_1.default.readFileSync(this.dbPath, { encoding: 'utf8' });
+        const data = JSON.parse(info);
+        this.historial = data.historial;
     }
 }
 exports.Busquedas = Busquedas;

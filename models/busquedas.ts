@@ -1,3 +1,4 @@
+import fs from 'fs';
 import * as dotenv from 'dotenv';
 import axios from 'axios';
 import { MapBoxPlace } from './mapBox';
@@ -10,12 +11,24 @@ const { parsed: {
 
 export class Busquedas {
 
-    historal: string[] = ['Alicante', 'Madrid', 'Barcelona'];
+    historial: string[] = [];
+    dbPath: string = './db/database.json';
 
     constructor() {
-        // TODO: leer DB si existe
+        this.leerBD();
     }
 
+    get historialCapitalizado(){
+
+        return this.historial.map( lugar =>{
+
+            let palabras: string [] = lugar.split(' ');
+            palabras = palabras.map( p => p[0].toUpperCase() + p.substring(1));
+
+            // Devuelvo las palabras unidas por el espacio
+            return palabras.join(' ');
+        });
+    }
 
     get paramsMapbox() {
 
@@ -49,7 +62,6 @@ export class Busquedas {
             const resp = await instance.get('');
             // console.log( resp.data.features );
 
-            // Video 76 - 3:17
             return resp.data.features.map( ( lugar : MapBoxPlace )  => ({
                     id: lugar.id,
                     nombre: lugar.place_name,
@@ -68,7 +80,6 @@ export class Busquedas {
     }
 
     async climarLugar( lat: number, lon: number){
-
 
         try {
             
@@ -91,5 +102,44 @@ export class Busquedas {
         } catch (error) {
             console.log(error);
         }
+    }
+
+
+    agregarHistorial( lugar : string ) {
+        
+        // Si está el lugar no graba
+        if( this.historial.includes(lugar.toLowerCase() )) return;
+
+        // Solo almaceno 5 en el historial
+        this.historial = this.historial.splice( 0, 4 );
+
+        // Guarda en el arreglo
+        this.historial.unshift( lugar.toLowerCase() );
+        
+        // Grabar en DB
+        this.guardarDB();
+    }
+
+    guardarDB(){
+
+        const payload = {
+            historial: this.historial,
+
+        }
+
+        fs.writeFileSync( this.dbPath, JSON.stringify( payload ) );
+
+    }
+
+    leerBD(){
+        // Comprobar que el archivo existe
+        if( !fs.existsSync( this.dbPath ) ) return;
+
+        // Si existe el archivo
+        const info: string = fs.readFileSync( this.dbPath, { encoding: 'utf8' });
+        const data = JSON.parse( info );
+
+        this.historial = data.historial;
+        
     }
 }
